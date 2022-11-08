@@ -3,6 +3,22 @@ import mediapipe as mp
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
+from socket import *
+import time
+
+HOST = gethostname()
+PORT = 55551
+
+def sendCoordinates(i: int):
+  val = str(i)
+  cli = socket(AF_INET, SOCK_STREAM)
+  cli.connect((HOST,PORT))
+  cli.send(val.encode())
+  cli.close()
+
+for i in range(100):
+  sendCoordinates(i)
+  time.sleep(2)
 
 # For static images:
 IMAGE_FILES = []
@@ -69,6 +85,7 @@ with mp_hands.Hands(
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     if results.multi_hand_landmarks:
       for hand_landmarks in results.multi_hand_landmarks:
+        print(hand_landmarks)
         mp_drawing.draw_landmarks(
             image,
             hand_landmarks,
